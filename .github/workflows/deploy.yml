@@ -38,11 +38,9 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Deploy to Kubernetes
-        env:
-          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG }}
         run: |
           mkdir -p ~/.kube
-          echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
+          echo "$K8S_CONFIG_DATA" | base64 -d > ~/.kube/config
           chmod 600 ~/.kube/config
           kubectl apply -f k8s/deployment.yaml
           kubectl create secret generic metocast-secrets \
@@ -66,16 +64,14 @@ jobs:
           kubectl rollout status deployment/metocast -n metocast --timeout=300s
 
       - name: Prisma DB Push
-        env:
-          KUBECONFIG_DATA: ${{ secrets.KUBECONFIG }}
         run: |
           mkdir -p ~/.kube
-          echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
+          echo "$K8S_CONFIG_DATA" | base64 -d > ~/.kube/config
           chmod 600 ~/.kube/config
           POD=$(kubectl get pod -n metocast -l app=metocast -o json | \
             python3 -c "import sys,json; pods=[p['metadata']['name'] for p in json.load(sys.stdin)['items'] if p['status']['phase']=='Running' and 'deletionTimestamp' not in p['metadata']]; print(pods[0])")
           kubectl exec -n metocast $POD -- node ./node_modules/prisma/build/index.js db push
 
-      - name: Cleanup kubeconfig
+      - name: Cleanup config
         if: always()
         run: rm -f ~/.kube/config
