@@ -1,6 +1,6 @@
-# MetôCast Web — Documentação Técnica Completa
+# MetoCast — Documentação Técnica Completa
 
-> Documento de referência técnica do projeto MetôCast Web. Contém tudo sobre a stack, arquitetura, banco de dados, build, deploy, API, componentes e como cada parte funciona. Use este documento para entender rapidamente o projeto inteiro.
+> Documento de referência técnica do projeto MetoCast. Contém tudo sobre a stack, arquitetura, banco de dados, build, deploy, API, componentes e como cada parte funciona. Use este documento para entender rapidamente o projeto inteiro.
 
 ---
 
@@ -33,7 +33,7 @@
 
 ## 1. Visão Geral do Projeto
 
-**MetôCast** é o site oficial do podcast MetôCast, criado por estudantes da Universidade Metodista de São Paulo. O site permite:
+**MetoCast** é o site oficial do podcast MetoCast, criado por estudantes da Universidade Metodista de São Paulo. O site permite:
 
 - Listar e assistir episódios do YouTube diretamente no site
 - Comentar nos episódios
@@ -67,17 +67,17 @@
 | **GitHub Actions** | Self-hosted | CI/CD automático no push para `Stable` |
 | **lucide-react** | 0.460.0 | Biblioteca de ícones |
 | **fast-xml-parser** | 4.5.0 | Parser de XML (RSS do YouTube) |
-| **@aws-sdk/client-s3** | 3.600+ | Upload de arquivos para Ceph RadosGW (S3-compatível) |
+| **@aws-sdk/client-s3** | 3.600+ | Upload de arquivos para armazenamento S3-compatível |
 | **sharp** | 0.33.2 | Otimização de imagens do Next.js |
 | **Vitest** | 2.1.0 | Framework de testes |
-| **Ceph RadosGW** | 19.2.3 | Object storage S3-compatível (self-hosted, porta 7480) |
+| **Object storage S3-compatível** | variável | Upload de arquivos persistentes via credenciais do runner |
 
 ---
 
 ## 3. Estrutura de Arquivos
 
 ```
-MetoCast-Web/
+MetoCast/
 ├── .github/workflows/
 │   └── deploy.yml              # CI/CD: GitHub Actions self-hosted runner
 ├── nginx/
@@ -313,7 +313,7 @@ docker compose exec -T app node ./node_modules/prisma/build/index.js db push
 Todas as páginas usam o App Router do Next.js 14. Server Components são o padrão; Client Components usam `"use client"`.
 
 ### Layout Raiz — `src/app/layout.tsx`
-- Metadados: título "MetôCast", descrição do podcast
+- Metadados: título "MetoCast", descrição do podcast
 - Google Fonts: Inter + Poppins
 - Envolve com `ThemeProvider` (context de dark/light)
 - Renderiza: `Navbar` (topo fixo) + `main` (padding-top 64px) + `Footer`
@@ -375,7 +375,7 @@ Todas as páginas usam o App Router do Next.js 14. Server Components são o padr
 
 ### Navbar (`src/components/Navbar.tsx`) — Client
 - Fixa no topo (`fixed top-0`, z-50, backdrop-blur)
-- Logo + nome "MetôCast" à esquerda
+- Logo + nome "MetoCast" à esquerda
 - Links: Início, Episódios, Assistir, Participações, Sobre, Comunidade
 - `ThemeToggle` à direita
 - Menu mobile (hamburger) com estado `menuOpen`
@@ -537,7 +537,7 @@ Função `checkAuth()` compara o header com `process.env.ADMIN_PASSWORD`. Retorn
 - **Multipart FormData** com campo `file`
 - Tipos permitidos: JPEG, PNG, WebP, GIF (imagem, max 10MB) + MP4, WebM (vídeo, max 100MB)
 - Key no bucket: `participacoes/{crypto.randomBytes(16).hex}.{ext}` — extensão sanitizada
-- Faz upload para Ceph RadosGW via S3 (`PutObjectCommand`, `forcePathStyle: true`)
+- Faz upload para armazenamento S3-compatível via S3 (`PutObjectCommand`, `forcePathStyle: true`)
 - Retorna: `{ url: "{ENDPOINT_URL}/{BUCKET}/participacoes/{hash}.{ext}", type: "image"|"video" }`
 
 #### GET `/api/admin/metrics`
@@ -660,7 +660,7 @@ src="https://www.youtube.com/embed/{videoId}"
 2. Formulário com campos de file input (foto ou vídeo)
 3. `handleUpload()` cria `FormData`, envia POST para `/api/admin/upload` com header `x-admin-password`
 4. API valida tipo MIME e tamanho, gera key aleatória: `participacoes/{hex}.{ext}`
-5. Faz upload para Ceph RadosGW via `@aws-sdk/client-s3` (`PutObjectCommand`)
+5. Faz upload para armazenamento S3-compatível via `@aws-sdk/client-s3` (`PutObjectCommand`)
 6. Retorna URL pública: `http://{ENDPOINT_URL}/{BUCKET}/participacoes/{hash}.{ext}`
 7. URL é salva no campo `fotoUrl` ou `videoUrl` da participação no banco
 
@@ -671,11 +671,11 @@ src="https://www.youtube.com/embed/{videoId}"
 - Header de autenticação obrigatório
 
 ### Infraestrutura de Storage
-- **Ceph RadosGW** rodando no host Proxmox na porta 7480
-- Bucket `metocast-uploads` com política de leitura pública (GET sem autenticação)
-- S3 client configurado com `forcePathStyle: true` (necessário para RadosGW sem DNS virtual-hosted)
+- Storage S3-compatível configurado por variáveis no runner de deploy
+- Bucket com política de leitura pública (GET sem autenticação)
+- S3 client configurado com `forcePathStyle: true`
 - Arquivos persistem independentemente de restarts ou número de réplicas do pod
-- URL no banco aponta diretamente para o Ceph — o app não faz proxy das imagens
+- URL no banco aponta diretamente para o endpoint de storage — o app não faz proxy das imagens
 
 ---
 
@@ -883,10 +883,10 @@ Arquivo `.env` na raiz (copiado de `/home/felipe/.env.metocast` no deploy):
 | `NEXT_PUBLIC_SITE_URL` | Não | URL pública do site (default: `https://metocast.example.com`) |
 | `ADMIN_PASSWORD` | Sim | Senha do painel admin. Sem default — **deve ser definida** |
 | `NODE_ENV` | Auto | `production` no Dockerfile |
-| `R2_ACCESS_KEY_ID` | Sim | Access key do usuário Ceph RadosGW (`metocast`) |
-| `R2_SECRET_ACCESS_KEY` | Sim | Secret key do usuário Ceph RadosGW |
-| `R2_BUCKET_NAME` | Sim | Nome do bucket no Ceph (`metocast-uploads`) |
-| `ENDPOINT_URL` | Sim | Endpoint do RadosGW (ex: `http://100.x.x.x:7480`) |
+| `R2_ACCESS_KEY_ID` | Sim | Access key do storage S3-compatível |
+| `R2_SECRET_ACCESS_KEY` | Sim | Secret key do storage S3-compatível |
+| `R2_BUCKET_NAME` | Sim | Nome do bucket de uploads |
+| `ENDPOINT_URL` | Sim | Endpoint do storage (ex: `https://storage.exemplo.com`) |
 
 ---
 
@@ -972,9 +972,8 @@ docker compose exec db psql -U metocast -d metocast_db
 ```
 
 ### Upload não funciona
-- Verificar se as env vars `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME` e `ENDPOINT_URL` estão nos secrets do K8s
-- Verificar se o RadosGW está rodando no Proxmox: `systemctl status ceph-radosgw@rgw.pve`
-- Verificar se a porta 7480 está acessível via Tailscale: `curl http://100.117.249.36:7480`
+- Verificar se as env vars `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME` e `ENDPOINT_URL` estão definidas no runner de deploy
+- Verificar se o endpoint de storage está acessível do runner
 - Verificar se `ADMIN_PASSWORD` está definido
 - Verificar `client_max_body_size` no nginx (deve ser 100m)
 

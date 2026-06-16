@@ -1,6 +1,6 @@
-# MetôCast Web
+# MetoCast
 
-Site oficial do **MetôCast** — Podcast dos estudantes da Universidade Metodista.
+Site oficial do **MetoCast** — Podcast dos estudantes da Universidade Metodista.
 
 ## Sobre
 
@@ -87,4 +87,4 @@ Projeto de uso interno da Universidade Metodista.
 
 ---
 
-Feito pela equipe MetôCast
+Feito pela equipe MetoCast

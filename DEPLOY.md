@@ -1,4 +1,4 @@
-# Documentação de Deploy — MetôCast v2
+# Documentação de Deploy — MetoCast v2
 
 ## Sumário
 
@@ -17,7 +17,7 @@
 
 ## Visão Geral
 
-O MetôCast roda em um servidor Linux auto-hospedado com a seguinte stack:
+O MetoCast roda em um servidor Linux auto-hospedado com a seguinte stack:
 
 - **Next.js 14** — Frontend + API (App Router, standalone mode)
 - **PostgreSQL 16** — Banco de dados (comentários, sugestões, participações)
@@ -61,7 +61,7 @@ Cloudflare (CDN + DNS + SSL)
 │                     └──────────────────┘     │
 │                                              │
 │  GitHub Actions Runner (systemd)             │
-│  ~/actions-runner/_work/MetoCast-Web/        │
+│  ~/actions-runner/_work/MetoCast/            │
 └──────────────────────────────────────────────┘
 ```
 
@@ -80,7 +80,7 @@ Cloudflare (CDN + DNS + SSL)
 | **Usuário** | felipe |
 | **Docker** | Instalado, felipe no grupo docker |
 | **Runner path** | `/home/felipe/actions-runner/` |
-| **Workspace** | `/home/felipe/actions-runner/_work/MetoCast-Web/MetoCast-Web/` |
+| **Workspace** | `/home/felipe/actions-runner/_work/MetoCast/MetoCast/` |
 | **Env file** | `/home/felipe/.env.metocast` |
 | **Backups** | `/home/felipe/backup_metocast_db_*.sql` |
 
@@ -95,9 +95,9 @@ Cloudflare (CDN + DNS + SSL)
 
 | Container | Imagem | Porta |
 |-----------|--------|-------|
-| `metocast-web-db-1` | postgres:16-alpine | 5432 (interna) |
-| `metocast-web-app-1` | metocast-web-app (build local) | 3000 (interna) |
-| `metocast-web-nginx-1` | nginx:alpine | 80 (exposta) |
+| `metocast-db-1` | postgres:16-alpine | 5432 (interna) |
+| `metocast-app-1` | metocast-app (build local) | 3000 (interna) |
+| `metocast-nginx-1` | nginx:alpine | 80 (exposta) |
 
 ---
 
@@ -203,7 +203,7 @@ ADMIN_PASSWORD=sua_senha_admin_aqui
 
 ```bash
 # Ir ao diretório do projeto
-cd /home/felipe/actions-runner/_work/MetoCast-Web/MetoCast-Web
+cd /home/felipe/actions-runner/_work/MetoCast/MetoCast
 
 # Ver status dos containers
 docker compose ps
@@ -273,21 +273,21 @@ git push origin Stable
 ### Backup do banco
 
 ```bash
-cd /home/felipe/actions-runner/_work/MetoCast-Web/MetoCast-Web
+cd /home/felipe/actions-runner/_work/MetoCast/MetoCast
 docker compose exec -T db pg_dump -U metocast metocast_db > ~/backup_metocast_db_$(date +%Y%m%d_%H%M%S).sql
 ```
 
 ### Restaurar backup
 
 ```bash
-cd /home/felipe/actions-runner/_work/MetoCast-Web/MetoCast-Web
+cd /home/felipe/actions-runner/_work/MetoCast/MetoCast
 docker compose exec -T db psql -U metocast metocast_db < ~/backup_metocast_db_XXXXXXXX.sql
 ```
 
 ### Sincronizar schema do banco (manualmente)
 
 ```bash
-cd /home/felipe/actions-runner/_work/MetoCast-Web/MetoCast-Web
+cd /home/felipe/actions-runner/_work/MetoCast/MetoCast
 docker compose exec -T app node ./node_modules/prisma/build/index.js db push
 ```
 
@@ -307,7 +307,7 @@ docker image prune -f
 ### Atualizar imagens base (postgres, nginx)
 
 ```bash
-cd /home/felipe/actions-runner/_work/MetoCast-Web/MetoCast-Web
+cd /home/felipe/actions-runner/_work/MetoCast/MetoCast
 docker compose pull db nginx
 docker compose up -d
 ```
@@ -370,7 +370,7 @@ Acesse: http://localhost:80
 
 1. Verificar se db está healthy: `docker compose ps`
 2. Testar conexão: `docker compose exec db psql -U metocast -d metocast_db -c "SELECT 1"`
-3. Se senha errada, resetar volume: `docker compose down && docker volume rm metocast-web_pgdata && docker compose up -d`
+3. Se senha errada, resetar volume: `docker compose down && docker volume rm metocast_pgdata && docker compose up -d`
 
 ### Imagens não otimizadas (erro sharp)
 
@@ -401,7 +401,7 @@ sudo systemctl restart cloudflared
 ## Estrutura do Projeto
 
 ```
-MetoCast-Web/
+MetoCast/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml             # CI/CD workflow
@@ -511,7 +511,7 @@ return isAuthenticated ? children : <Navigate />;
 
 **Como Testar**:
 1. Abra o DevTools (F12) → Console
-2. Acesse `http://localhost:5173/MetôCast-Web/login`
+2. Acesse `http://localhost:5173/MetoCast/login`
 3. Verifique os logs:
    ```
    [AuthProvider] Render - loading: true, isAuth: false
@@ -662,7 +662,7 @@ const Login = () => {
 
 ### Vite Base Path
 - **Desenvolvimento**: `/` (localhost)
-- **Produção (subpath)**: `/MetôCast-Web/`
+- **Produção (subpath)**: `/MetoCast/`
 - **Produção (domínio próprio)**: `/`
 
 ### Variáveis de Ambiente (Railway)
@@ -689,8 +689,8 @@ ALLOWED_ORIGINS=https://lysk-dot.github.io
 - **Organização**: creative-light (Railway)
 - **GitHub**: Lysk-dot
 - **Repositórios**:
-  - Frontend: MetôCast-Web
-  - Backend: MetôCast
+  - Frontend: MetoCast
+  - Backend: MetoCast
 
 ---
 
