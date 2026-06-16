@@ -4,6 +4,8 @@ Site oficial do **MetôCast** — Podcast dos estudantes da Universidade Metodis
 
 ## Sobre
 
+Prazer :D
+
 Podcast criado por estudantes da Universidade Metodista para discutir educação, vida universitária, cultura e temas sociais relevantes.
 
 Os episódios são automaticamente importados do canal no YouTube via RSS feed. Vídeos são entregues pelo embed do YouTube (zero carga no servidor).
