@@ -438,7 +438,6 @@ function ParticipacoesTab({ authHeader }: { authHeader: Record<string, string> }
         </button>
       </div>
 
-      {/* Form Modal */}
       {showForm && (
         <div className="bg-surface-card border border-surface-border rounded-xl p-6 space-y-4">
           <div className="flex items-center justify-between">
@@ -512,7 +511,6 @@ function ParticipacoesTab({ authHeader }: { authHeader: Record<string, string> }
               />
             </div>
 
-            {/* Photo upload */}
             <div>
               <label className="block text-sm text-foreground-muted mb-1">
                 <Image size={14} className="inline mr-1" />
@@ -549,7 +547,6 @@ function ParticipacoesTab({ authHeader }: { authHeader: Record<string, string> }
               </div>
             </div>
 
-            {/* Video upload */}
             <div>
               <label className="block text-sm text-foreground-muted mb-1">
                 <Film size={14} className="inline mr-1" />
@@ -602,7 +599,6 @@ function ParticipacoesTab({ authHeader }: { authHeader: Record<string, string> }
         </div>
       )}
 
-      {/* List */}
       {items.length === 0 && !showForm && (
         <p className="text-foreground-faint text-center py-8">
           Nenhuma participação cadastrada ainda.
@@ -614,7 +610,6 @@ function ParticipacoesTab({ authHeader }: { authHeader: Record<string, string> }
           key={p.id}
           className="bg-surface-card border border-surface-border rounded-xl p-4 flex items-start gap-4"
         >
-          {/* Photo */}
           {p.fotoUrl && (
             <img
               src={p.fotoUrl}
