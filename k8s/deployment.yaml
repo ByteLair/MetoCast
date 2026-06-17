@@ -54,26 +54,8 @@ spec:
                 secretKeyRef:
                   name: metocast-secrets
                   key: YOUTUBE_CHANNEL_ID
-            - name: R2_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: metocast-secrets
-                  key: R2_ACCESS_KEY_ID
-            - name: R2_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: metocast-secrets
-                  key: R2_SECRET_ACCESS_KEY
-            - name: R2_BUCKET_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: metocast-secrets
-                  key: R2_BUCKET_NAME
-            - name: ENDPOINT_URL
-              valueFrom:
-                secretKeyRef:
-                  name: metocast-secrets
-                  key: ENDPOINT_URL
+            # R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, ENDPOINT_URL
+            # removidos — upload via Ceph RadosGW desativado junto com participações
           resources:
             requests:
               cpu: 100m

@@ -1,3 +1,15 @@
+import { NextResponse } from "next/server";
+
+// UPLOAD (DESATIVADO) — dependia do Ceph RadosGW (removido em INC-008)
+// Usado exclusivamente pela feature de participações (também desativada)
+// Para reativar: descomentar o bloco abaixo, restaurar as secrets R2 no GitHub
+// e reativar a feature de participações
+export function POST() {
+  return NextResponse.json({ error: "Upload desativado." }, { status: 503 });
+}
+
+/* === UPLOAD VIA CEPH RADOSGW (DESATIVADO) ===
+
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import crypto from "crypto";
@@ -23,7 +35,7 @@ function checkAuth(request: NextRequest): boolean {
   return !!password && password === process.env.ADMIN_PASSWORD;
 }
 
-// POST /api/admin/upload — upload a photo or video
+// POST /api/admin/upload — upload a photo or video to Ceph RadosGW (S3-compatible)
 export async function POST(request: NextRequest) {
   if (!checkAuth(request)) {
     return NextResponse.json({ error: "Não autorizado." }, { status: 401 });
@@ -70,3 +82,5 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ url, type: isVideo ? "video" : "image" }, { status: 201 });
 }
+
+=== FIM UPLOAD (DESATIVADO) === */
