@@ -1,4 +1,14 @@
 import { NextResponse } from "next/server";
+
+// PARTICIPAÇÕES — rota desativada temporariamente
+// Para reativar: remover o export GET abaixo e descomentar o bloco /* === PARTICIPAÇÕES === */
+export function GET() {
+  return NextResponse.json({ error: "Não disponível." }, { status: 404 });
+}
+
+/* === PARTICIPAÇÕES (DESATIVADO) ===
+
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -12,3 +22,5 @@ export async function GET() {
 
   return NextResponse.json(participacoes);
 }
+
+=== FIM PARTICIPAÇÕES (DESATIVADO) === */

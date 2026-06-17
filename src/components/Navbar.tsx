@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: "/", label: "Início" },
   { href: "/episodios", label: "Episódios" },
   { href: "/assistir", label: "Assistir" },
-  { href: "/participacoes", label: "Participações" },
+  // { href: "/participacoes", label: "Participações" }, // DESATIVADO
   { href: "/sobre", label: "Sobre" },
   { href: "/comunidade", label: "Comunidade" },
 ];

@@ -1,5 +1,14 @@
+import { redirect } from "next/navigation";
+
+// PARTICIPAÇÕES — desativado temporariamente
+// Para reativar: remover o export abaixo e descomentar o bloco /* === PARTICIPAÇÕES === */
+export default function ParticipacoesPage() {
+  redirect("/");
+}
+
+/* === PARTICIPAÇÕES (DESATIVADO) ===
+
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Users, Camera, Calendar, ExternalLink, Film } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -24,7 +33,6 @@ export default async function ParticipacoesPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header */}
       <div className="mb-10">
         <div className="w-12 h-1 bg-primary-yellow rounded-full mb-4" />
         <h1 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mb-2">
@@ -36,7 +44,6 @@ export default async function ParticipacoesPage() {
         </p>
       </div>
 
-      {/* Stats */}
       {participacoes.length > 0 && (
         <div className="flex flex-wrap gap-6 mb-10 text-sm text-foreground-muted">
           <span className="inline-flex items-center gap-2">
@@ -58,7 +65,6 @@ export default async function ParticipacoesPage() {
         </div>
       )}
 
-      {/* Empty State */}
       {participacoes.length === 0 && (
         <div className="text-center py-20">
           <Camera size={48} className="mx-auto text-foreground-faint mb-4" />
@@ -66,7 +72,6 @@ export default async function ParticipacoesPage() {
         </div>
       )}
 
-      {/* Photo Album Grid */}
       {withPhoto.length > 0 && (
         <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 space-y-4 mb-12">
           {withPhoto.map((p) => (
@@ -74,7 +79,6 @@ export default async function ParticipacoesPage() {
               key={p.id}
               className="group break-inside-avoid bg-surface-card border border-surface-border rounded-2xl overflow-hidden hover:border-primary-yellow/40 transition-all duration-300"
             >
-              {/* Photo */}
               <div className="relative w-full aspect-[3/4] sm:aspect-auto sm:h-auto">
                 <img
                   src={p.fotoUrl!}
@@ -82,10 +86,7 @@ export default async function ParticipacoesPage() {
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
-                {/* Gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Link overlay */}
                 {p.videoId && (
                   <Link
                     href={`/episodio/${p.videoId}`}
@@ -96,8 +97,6 @@ export default async function ParticipacoesPage() {
                   </Link>
                 )}
               </div>
-
-              {/* Info */}
               <div className="p-3 space-y-1">
                 <h3 className="font-heading font-semibold text-sm text-foreground group-hover:text-primary-yellow transition-colors truncate">
                   {p.nome}
@@ -120,7 +119,6 @@ export default async function ParticipacoesPage() {
         </div>
       )}
 
-      {/* Without photo – simple list */}
       {withoutPhoto.length > 0 && (
         <>
           {withPhoto.length > 0 && (
@@ -167,3 +165,5 @@ export default async function ParticipacoesPage() {
     </div>
   );
 }
+
+=== FIM PARTICIPAÇÕES (DESATIVADO) === */

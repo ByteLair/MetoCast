@@ -47,14 +47,15 @@ export interface MetricsSummary {
   topVideos: { videoId: string; title: string; views: number; minutes: number }[];
 }
 
-export interface Participacao {
-  id: number;
-  nome: string;
-  cargo: string | null;
-  episodio: string | null;
-  videoId: string | null;
-  data: string | null;
-  fotoUrl: string | null;
-  videoUrl: string | null;
-  createdAt: string;
-}
+// PARTICIPAÇÕES (DESATIVADO) — descomentar para reativar
+// export interface Participacao {
+//   id: number;
+//   nome: string;
+//   cargo: string | null;
+//   episodio: string | null;
+//   videoId: string | null;
+//   data: string | null;
+//   fotoUrl: string | null;
+//   videoUrl: string | null;
+//   createdAt: string;
+// }

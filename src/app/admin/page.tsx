@@ -12,18 +12,19 @@ import {
   Users,
   Video,
   LogIn,
-  UserPlus,
-  Pencil,
-  Upload,
-  Image,
-  Film,
-  X,
-  Calendar,
-  ExternalLink,
+  // PARTICIPAÇÕES (DESATIVADO) — descomentar para reativar
+  // UserPlus,
+  // Pencil,
+  // Upload,
+  // Image,
+  // Film,
+  // X,
+  // Calendar,
+  // ExternalLink,
 } from "lucide-react";
-import type { Comment, Suggestion, MetricsSummary, Participacao } from "@/types";
+import type { Comment, Suggestion, MetricsSummary /* , Participacao */ } from "@/types"; // Participacao — DESATIVADO
 
-type Tab = "comments" | "suggestions" | "metrics" | "participacoes";
+type Tab = "comments" | "suggestions" | "metrics"; // | "participacoes" — DESATIVADO
 
 export default function AdminPage() {
   const [password, setPassword] = useState("");
@@ -131,7 +132,7 @@ export default function AdminPage() {
         {([
           { id: "comments" as Tab, label: "Comentários", icon: MessageCircle },
           { id: "suggestions" as Tab, label: "Sugestões", icon: Lightbulb },
-          { id: "participacoes" as Tab, label: "Participações", icon: UserPlus },
+          // { id: "participacoes" as Tab, label: "Participações", icon: UserPlus }, // DESATIVADO
           { id: "metrics" as Tab, label: "Métricas", icon: BarChart3 },
         ]).map((t) => (
           <button
@@ -151,7 +152,7 @@ export default function AdminPage() {
 
       {tab === "comments" && <CommentsTab authHeader={authHeader} />}
       {tab === "suggestions" && <SuggestionsTab authHeader={authHeader} />}
-      {tab === "participacoes" && <ParticipacoesTab authHeader={authHeader} />}
+      {/* PARTICIPAÇÕES (DESATIVADO): {tab === "participacoes" && <ParticipacoesTab authHeader={authHeader} />} */}
       {tab === "metrics" && <MetricsTab authHeader={authHeader} />}
     </div>
   );
@@ -304,7 +305,8 @@ function SuggestionsTab({
   );
 }
 
-/* ===== Participações Tab ===== */
+/* ===== Participações Tab (DESATIVADO) ===== */
+/* === PARTICIPAÇÕES (DESATIVADO) — descomentar função inteira para reativar ===
 function ParticipacoesTab({ authHeader }: { authHeader: Record<string, string> }) {
   const [items, setItems] = useState<Participacao[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -676,6 +678,7 @@ function ParticipacoesTab({ authHeader }: { authHeader: Record<string, string> }
     </div>
   );
 }
+=== FIM PARTICIPAÇÕES (DESATIVADO) === */
 
 /* ===== Metrics Tab ===== */
 function MetricsTab({ authHeader }: { authHeader: Record<string, string> }) {

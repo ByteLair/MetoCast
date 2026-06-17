@@ -1,3 +1,14 @@
+import { NextResponse } from "next/server";
+
+// PARTICIPAÇÕES — rota admin desativada temporariamente
+// Para reativar: remover os exports abaixo e descomentar o bloco /* === PARTICIPAÇÕES === */
+export function GET() { return NextResponse.json({ error: "Não disponível." }, { status: 404 }); }
+export function POST() { return NextResponse.json({ error: "Não disponível." }, { status: 404 }); }
+export function PUT() { return NextResponse.json({ error: "Não disponível." }, { status: 404 }); }
+export function DELETE() { return NextResponse.json({ error: "Não disponível." }, { status: 404 }); }
+
+/* === PARTICIPAÇÕES (DESATIVADO) ===
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -161,3 +172,5 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Participação não encontrada." }, { status: 404 });
   }
 }
+
+=== FIM PARTICIPAÇÕES (DESATIVADO) === */
